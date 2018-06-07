@@ -6,9 +6,10 @@ import (
 	"encoding/binary"
 	"io"
 
-	"github.com/mileschao/echain/common/serialize"
-
 	"github.com/mileschao/echain/common"
+	"github.com/mileschao/echain/common/serialize"
+	"github.com/mileschao/echain/core/payload"
+	stypes "github.com/mileschao/echain/smartcontract/types"
 )
 
 //TxType transaction type
@@ -37,10 +38,44 @@ type Transaction struct {
 	GasPrice   uint64
 	GasLimit   uint64
 	Payer      common.Address
-	Payload    Payload
+	Payload    payload.Payload
 	Attributes []*TxAttribute
 	Sigs       []*Sig
 	hash       *common.Uint256
+}
+
+// NewDeployTx returns a deploy Transaction
+func NewDeployTx(code stypes.VMCode, name, version, author, email, desp string, needStorage bool) *Transaction {
+	//TODO: check arguments
+	DeployCodePayload := &payload.DeployCode{
+		Code:        code,
+		NeedStorage: needStorage,
+		Name:        name,
+		Version:     version,
+		Author:      author,
+		Email:       email,
+		Description: desp,
+	}
+
+	return &Transaction{
+		TxType:     Deploy,
+		Payload:    DeployCodePayload,
+		Attributes: nil,
+	}
+}
+
+// NewInvokeTx returns an invoke Transaction
+func NewInvokeTx(vmcode stypes.VMCode) *Transaction {
+	//TODO: check arguments
+	invokeCodePayload := &payload.InvokeCode{
+		Code: vmcode,
+	}
+
+	return &Transaction{
+		TxType:     Invoke,
+		Payload:    invokeCodePayload,
+		Attributes: nil,
+	}
 }
 
 //Serialize implement Payload interface

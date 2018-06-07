@@ -21,3 +21,4 @@ import:
 - package: google.golang.org/grpc
   repo: https://github.com/grpc/grpc-go.git
 - package: github.com/ontio/ontology-crypto
+- package: github.com/syndtr/goleveldb
